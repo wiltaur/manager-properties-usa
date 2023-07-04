@@ -1,11 +1,13 @@
 ﻿using manager_properties_usa.Data.interfaces;
 using manager_properties_usa.Models.Dto;
 using manager_properties_usa.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace manager_properties_usa.Controllers
 {
+    [Authorize]
     [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
