@@ -94,9 +94,9 @@ namespace manager_properties_usa.Utilities
     }
     public class Settings
     {
-        public string Title { get; set; }
-        public string Version { get; set; }
-        public string Environment { get; set; }
-        public string Dtap { get; set; }
+        public string? Title { get; set; }
+        public string? Version { get; set; }
+        public string? Environment { get; set; }
+        public string? Dtap { get; set; }
     }
 }
