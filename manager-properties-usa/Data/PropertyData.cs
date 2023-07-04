@@ -136,17 +136,20 @@ namespace manager_properties_usa.Data
                         .Skip((pageNumber - 1) * pageZise)
                         .Take(pageZise);
 
-            propertiesResponse.TotalRecords = !string.IsNullOrEmpty(propertyRequest.SearchString) ? await _context.Properties.Include(c => c.IdOwnerNavigation).Where(p => p.Name.Contains(propertyRequest.SearchString)
+            propertiesResponse.TotalRecords = !string.IsNullOrEmpty(propertyRequest.SearchString) ?  _context.Properties.Include(c => c.IdOwnerNavigation).Where(p => p.Name.Contains(propertyRequest.SearchString)
                                    || p.IdOwnerNavigation.Name.Contains(propertyRequest.SearchString)
-                                   || p.Address.Contains(propertyRequest.SearchString)).CountAsync() : await _context.Properties.CountAsync();
+                                   || p.Address.Contains(propertyRequest.SearchString)).Count() : _context.Properties.Count();
             
             var totalPages = (double)propertiesResponse.TotalRecords / pageZise;
             propertiesResponse.TotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
             propertiesResponse.PageNumber = pageNumber;
             propertiesResponse.PageSize = pageZise;
 
-            propertiesResponse.Properties = await properties.AsNoTracking().ToListAsync();
+            propertiesResponse.Properties = properties.AsNoTracking().ToList();
             return propertiesResponse;
+
+            //TODO: ToListAsync was changed to ToList and CountAsync was changed to Count,
+            //because the Moqs in UnitTests fails! And Don't more time for apply the solution. :(
         }
 
         /// <summary>

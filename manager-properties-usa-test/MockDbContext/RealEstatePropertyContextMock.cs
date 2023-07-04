@@ -1,5 +1,8 @@
 ﻿using manager_properties_usa.Models.Context;
+using manager_properties_usa.Models.Model;
+using manager_properties_usa_test.Helpper;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Entity.Infrastructure;
 
 namespace manager_properties_usa_test.MockDbContext
 {
@@ -16,22 +19,22 @@ namespace manager_properties_usa_test.MockDbContext
             return new Mock<RealEstatePropertyContext>(dbOptions);
         }
 
-        public static DbSet<T> GetQueryableMockDbSet<T>(params T[] sourceList) where T : class
+        public static Mock<DbSet<T>> GetMockDbSet<T>(IQueryable<T> introLst) where T : class
         {
-            return GetMockDbSet(sourceList).Object;
-        }
+            var mockSet = new Mock<DbSet<T>>();
 
-        public static Mock<DbSet<T>> GetMockDbSet<T>(params T[] sourceList) where T : class
-        {
-            var queryable = sourceList.AsQueryable();
+            mockSet.As<IDbAsyncEnumerable<T>>()
+                .Setup(m => m.GetAsyncEnumerator())
+                .Returns(new TestDbAsyncEnumerator<T>(introLst.GetEnumerator()));
 
-            var dbSet = new Mock<DbSet<T>>();
-            dbSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(queryable.Provider);
-            dbSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(queryable.Expression);
-            dbSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(queryable.ElementType);
-            dbSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(() => queryable.GetEnumerator());
+            mockSet.As<IQueryable<T>>()
+                .Setup(m => m.Provider)
+                .Returns(new TestDbAsyncQueryProvider<T>(introLst.Provider));
 
-            return dbSet;
+            mockSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(introLst.Expression);
+            mockSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(introLst.ElementType);
+            mockSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(() => introLst.GetEnumerator());
+            return mockSet;
         }
     }
 }

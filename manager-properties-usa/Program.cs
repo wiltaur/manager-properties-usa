@@ -62,6 +62,7 @@ builder.Services.AddCors(options =>
 });
 
 //JWT Authentication
+//If you don't to know the AppUrl, please comment ValidIssuer and ValidateAudience, then pass ValidateAudience and ValidateIssuer to false.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -69,9 +70,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        ValidIssuer = cnf.GetSecret("AuthIssuer"),
+        ValidAudience = cnf.GetSecret("AuthAudience"),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(cnf.GetSecret("AuthKey")))
     };
 });
 

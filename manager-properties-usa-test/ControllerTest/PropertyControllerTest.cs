@@ -1,13 +1,7 @@
 ﻿using manager_properties_usa.Controllers;
 using manager_properties_usa.Data.interfaces;
 using manager_properties_usa.Models.Dto;
-using manager_properties_usa.Utilities;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace manager_properties_usa_test.ControllerTest
 {
